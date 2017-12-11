@@ -15,6 +15,7 @@ An [Idris](https://www.idris-lang.org/) client for [GraphQL](http://graphql.org/
 
 - [ ] Add other sorts of arguments (only string arguments for now).
 - [ ] Add more schema top-level types.
+- [ ] Add implementation using [idris-http](https://github.com/uwap/idris-http) when targetting C (only `node` target is currently supported).
 
 ## Build
 
