@@ -1,6 +1,7 @@
 module Client
 
 import GraphQL.Schema
+import GraphQL.Query
 
 %inline
 public export
@@ -17,7 +18,7 @@ client = require "graphql-request"
 
 ||| Takes a query, makes the request, and for the moment just prints the result.
 export
-request : String -> Query sch k -> JS_IO ()
+request : String -> Query sch -> JS_IO ()
 request url q = do
   c <- client
   jscall

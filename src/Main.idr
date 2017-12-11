@@ -2,6 +2,7 @@ module Main
 
 import GraphQL.Client
 import GraphQL.Schema
+import GraphQL.Query
 import GraphQL.SchemaTests
 
 main : JS_IO ()

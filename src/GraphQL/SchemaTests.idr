@@ -1,6 +1,7 @@
 module SchemaTests
 
 import GraphQL.Schema
+import GraphQL.Query
 import TestUtil
 
 %default total
@@ -31,13 +32,13 @@ Movies = MkSchema
 ||| }
 ||| ```
 export
-inception : Query Movies (subQuery Movies (MSimple (TyRef "Query")))
+inception : Query Movies
 inception = Qu
-  [ MkQueryField Nothing "Movie" [("title", "Inception")]
-      (Qu [ MkQueryField Nothing "releaseDate" [] Triv
-          , MkQueryField Nothing "actors" []
-              (Qu [ MkQueryField Nothing "name" [] Triv ])
-          ])
+  [ "inception" ::: fieldA "Movie" [("title", "Inception")]
+     (Qu [ field "releaseDate" Triv
+         , field "actors" $
+             Qu [ field "name" Triv]
+         ])
   ]
 
 ||| An api to access information about books and authors. Tests circular
@@ -61,22 +62,33 @@ Library = MkSchema
       )
   ]
 
-libQ : Query Library (subQuery Library (MSimple (TyRef "Author")))
+libQ : SubQuery Library (subQuery Library (MSimple (TyRef "Author")))
 libQ = Qu
-  [ MkQueryField Nothing "name" [] Triv
-  , MkQueryField Nothing "age" [] Triv
-  , MkQueryField Nothing "books" [("before", "1987")]
-      (Qu [ MkQueryField Nothing "pubDate" [] Triv
-          , MkQueryField Nothing "name" [] Triv
-          ])
+  [ "authorName" ::: field "name" Triv
+  , field "age" Triv
+  , fieldA "books" [("before", "1987")] $
+      Qu [ field "pubDate" Triv
+         , field "name" Triv
+         ]
   ]
+
+inceptionF : String
+inceptionF =
+  """{
+  inception: Movie(title: \"Inception\")
+  {
+    releaseDate
+    actors
+    {
+      name
+    }
+  }
+}
+"""
 
 export
 spec : IO ()
-spec = do
-  assertEq
-    (fmt libQ)
-    "{\n  name\n  age\n  books(before: \"1987\")\n    {\n      pubDate\n      name\n    }\n}\n"
+spec =
   assertEq
     (fmt inception)
-    "{\n  Movie(title: Inception)\n    {\n      releaseDate\n      actors\n        {\n          name\n        }\n    }\n}\n"
+    inceptionF
