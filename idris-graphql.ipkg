@@ -12,5 +12,5 @@ bugtracker = https://github.com/githubuser/idris-graphql/issues
 sourcedir  = src
 modules    = Test, GraphQL.Schema, GraphQL.SchemaTests, GraphQL.Client
 tests      = Test.spec
-executable = idris_graphql
+executable = main.js
 main       = Main
