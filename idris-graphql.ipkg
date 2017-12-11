@@ -1,0 +1,16 @@
+package idris-graphql
+
+version    = 0.0.1
+brief      = "Initial project template from idringen"
+
+author     = James Haydon <james.haydon@gmail.com>
+license    = BSD3
+homepage   = https://github.com/githubuser/idris-graphql
+sourceloc  = git@github.com:githubuser/idris-graphql.git
+bugtracker = https://github.com/githubuser/idris-graphql/issues
+
+sourcedir  = src
+modules    = Test
+tests      = Test.spec
+executable = idris-graphql
+main       = Main
