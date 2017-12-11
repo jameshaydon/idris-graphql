@@ -1,11 +1,12 @@
 module Test
 
+import TestUtil
+
+import GraphQL.SchemaTests
+
 %access public export
 
-assertEq : Eq a => (given : a) -> (expected : a) -> IO Unit
-assertEq g e = if g == e
-               then putStrLn "Test Passed"
-               else putStrLn "Test Failed"
-
 spec : IO ()
-spec = assertEq 1 1
+spec = do
+  assertEq 1 1
+  SchemaTests.spec
