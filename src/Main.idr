@@ -4,6 +4,7 @@ import GraphQL.Client
 import GraphQL.Schema
 import GraphQL.Query
 import GraphQL.SchemaTests
+import GraphQL.Value
 
 main : JS_IO ()
 main = do

@@ -41,32 +41,43 @@ data IsProj1 : (xs : List a) -> (ys : List (a,b)) -> Type where
   EmptyProj1 : IsProj1 [] []
   NextProj1 : IsProj1 xs ys -> IsProj1 (x :: xs) ((x,y) :: ys)
 
+||| Represents a modification to a type. For example `[Episode!]!` is
+||| represented by `NonNull (List (NonNull Atom))`.
+data TypMod =
+    Atom
+  | NonNull TypMod
+  | List TypMod
+
 mutual
 
   ||| A GraphQl type.
   data GqlTy : List String -> Type where
     Scalar : ScalarTy -> GqlTy s
     TyRef : (n : String) -> {auto pf : Elem n s} -> GqlTy s
-    Ob : (List (String, TyMod s)) -> GqlTy s
+    Ob : (List (String, GqlTy s, TypMod)) -> GqlTy s
     Enum : EnumTy -> GqlTy s
 
-  ||| A GraphQL type with modifiers applied. These are types that are used in
-  ||| fields.
-  data TyMod : List String -> Type where
-    MSimple : GqlTy s -> TyMod s
-    MNonNull : TyMod s -> TyMod s
-    MList : TyMod s -> TyMod s
+||| A resolved type: not a reference but could contain references.
+data RTy : List String -> Type where
+  RScalar : ScalarTy -> RTy s
+  ROb : (List (String, GqlTy s, TypMod)) -> RTy s
+  REnum : EnumTy -> RTy s
+
+rTyToTy : RTy ns -> GqlTy ns
+rTyToTy (RScalar x) = Scalar x
+rTyToTy (ROb xs) = Ob xs
+rTyToTy (REnum xs) = Enum xs
 
 mutual
   ||| A valid GraphQL schema.
   data Schema : List String -> Type where
-    MkSchema : (schema : List (String, GqlTy ns)) -> {auto pf : IsProj1 ns schema} -> Schema ns
+    MkSchema : (schema : List (String, RTy ns)) -> {auto pf : IsProj1 ns schema} -> Schema ns
 
   ||| A partial GraphQL schema.
   data PartialSchema : {ns, ns' : List String} -> (s : Schema ns) -> (ns' : List String) -> {auto pf : IsEnd ns' ns} -> Type where
     MkPSchema : {ns  : List String} ->
                 {ns' : List String} ->
                 {auto isEnd : IsEnd ns' ns} ->
-                (tops : List (String, GqlTy ns)) ->
+                (tops : List (String, RTy ns)) ->
                 {auto isValid : IsProj1 ns' tops } ->
                 PartialSchema s ns'

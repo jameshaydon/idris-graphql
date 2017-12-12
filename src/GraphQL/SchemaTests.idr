@@ -6,19 +6,33 @@ import TestUtil
 
 %default total
 
-||| The movies API which can be queries at: `http://www.graph.cool/`
+||| A fragment of the movies API which can be queried at: `http://www.graph.cool/`
+||| ```
+||| type Query {
+|||   Movie: Movie
+||| }
+|||
+||| type Movie {
+|||   releaseDate: String
+|||   actors: [!Actor]
+||| }
+|||
+||| type Actor {
+|||   name: !String
+|||  }
+||| ```
 export
 Movies : Schema ["Query", "Movie", "Actor"]
 Movies = MkSchema
   [ ( "Query"
-    , Ob [ ( "Movie", MSimple (TyRef "Movie")) ]
+    , ROb [ ( "Movie", TyRef "Movie", Atom) ]
     )
   , ( "Movie"
-    , Ob [ ("releaseDate", MSimple (Scalar SString))
-         , ("actors", MList (MSimple (TyRef "Actor"))) ]
+    , ROb [ ("releaseDate", Scalar SString, Atom)
+          , ("actors", TyRef "Actor", List (NonNull Atom)) ]
     )
   , ( "Actor"
-    , Ob [ ("name", MSimple (Scalar SString)) ]
+    , ROb [ ("name", Scalar SString, NonNull Atom) ]
     )
   ]
 
@@ -35,9 +49,9 @@ export
 inception : Query Movies
 inception = Qu
   [ "inception" ::: fieldA "Movie" [("title", "Inception")]
-     (Qu [ field "releaseDate" Triv
+     (Qu [ field "releaseDate" TrivScalar
          , field "actors" $
-             Qu [ field "name" Triv]
+             Qu [ field "name" TrivScalar]
          ])
   ]
 
@@ -46,29 +60,29 @@ inception = Qu
 Library : Schema ["Actor", "Author", "Book"]
 Library = MkSchema
   [ ( "Actor"
-    , Ob [ ("name", MNonNull (MSimple (Scalar SString))) ]
+    , ROb [ ("name", Scalar SString, NonNull Atom) ]
     )
   , ( "Author"
-    , Ob [ ( "name", MNonNull (MSimple (Scalar SString)))
-         , ( "age", MSimple (Scalar SInt))
-         , ( "books", MList (MNonNull (MSimple (TyRef "Book"))))
+    , ROb [ ( "name", Scalar SString, NonNull Atom)
+         , ( "age", Scalar SInt, NonNull Atom)
+         , ( "books", TyRef "Book", List (NonNull Atom))
          ]
     )
-    , ( "Book"
-      , Ob [ ("name", MNonNull (MSimple (Scalar SString)))
-           , ("pubDate", MSimple (Scalar SInt))
-           , ("author", MSimple (TyRef "Author"))
-           ]
-      )
+  , ( "Book"
+    , ROb [ ("name", Scalar SString, NonNull Atom)
+          , ("pubDate", Scalar SInt, NonNull Atom)
+          , ("author", TyRef "Author", Atom)
+          ]
+    )
   ]
 
-libQ : SubQuery Library (subQuery Library (MSimple (TyRef "Author")))
+libQ : SubQuery Library (subQuery Library (TyRef "Author")) Atom
 libQ = Qu
-  [ "authorName" ::: field "name" Triv
-  , field "age" Triv
+  [ "authorName" ::: field "name" TrivScalar
+  , field "age" TrivScalar
   , fieldA "books" [("before", "1987")] $
-      Qu [ field "pubDate" Triv
-         , field "name" Triv
+      Qu [ field "pubDate" TrivScalar
+         , field "name" TrivScalar
          ]
   ]
 
