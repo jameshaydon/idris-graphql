@@ -14,3 +14,4 @@ modules    = Test, GraphQL.Schema, GraphQL.SchemaTests, GraphQL.Client
 tests      = Test.spec
 executable = main.js
 main       = Main
+pkgs       = contrib, pruviloj, js

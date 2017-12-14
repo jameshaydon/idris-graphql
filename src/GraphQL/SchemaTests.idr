@@ -48,7 +48,7 @@ Movies = MkSchema
 export
 inception : Query Movies
 inception = Qu
-  [ "inception" ::: fieldA "Movie" [("title", "Inception")]
+  [ fieldA "Movie" [("title", "Inception")]
      (Qu [ field "releaseDate" TrivScalar
          , field "actors" $
              Qu [ field "name" TrivScalar]

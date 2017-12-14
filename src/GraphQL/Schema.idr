@@ -26,6 +26,13 @@ scalar SString = String
 scalar SBoolean = Bool
 scalar SID = String
 
+showScalar : Schema.scalar st -> String
+showScalar {st = SInt} x = show x
+showScalar {st = SFloat} x = show x
+showScalar {st = SString} x = show x
+showScalar {st = SBoolean} x = show x
+showScalar {st = SID} x = show x
+
 ||| A proof that the first list is the end of the second list.
 data IsEnd : (xs : List a) -> (ys : List a) -> Type where
   IsAll : IsEnd xs xs
