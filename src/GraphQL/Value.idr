@@ -71,6 +71,7 @@ rty s (RScalar x) = ReScalar x
 rty s (REnum xs) = ReScalar SString -- TODO add enums o RespTy and do something like: (x ** Elem x xs)
 rty s (ROb xs) = ReRecord (map (\(f,t,m) => assert_total (f, typMod (rty s (subQuery s t)) m)) xs)
 
+total
 responseType : (q : SubQuery sch r m) -> RespTy
 responseType {sch} {r} {m} q = typMod (rty sch r) m
 

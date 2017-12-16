@@ -10,7 +10,7 @@ import Js.ASync
 %default total
 
 IRT : Type
-IRT = assert_total $ ResponseData (Value.responseType Inception)
+IRT = ResponseData (Value.responseType Inception)
 
 IRT' : Type
 IRT' = ResponseData (ReMaybe (ReRecord [("Movie",
