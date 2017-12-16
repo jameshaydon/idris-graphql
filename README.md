@@ -70,7 +70,7 @@ Maybe (Record [("Movie",
       text-file.
 - [ ] Type provider which uses API reflection for querying an API for it's
       schema.
-- [ ] A request function whose return type depends on the schema of input query.
+- [x] A request function whose return type depends on the schema of input query.
       The return type should use [extensible
       records](https://github.com/gonzaw/extensible-records).
 

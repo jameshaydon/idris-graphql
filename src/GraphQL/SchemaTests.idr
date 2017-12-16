@@ -46,8 +46,8 @@ Movies = MkSchema
 ||| }
 ||| ```
 export
-inception : Query Movies
-inception = Qu
+Inception : Query Movies
+Inception = Qu
   [ fieldA "Movie" [("title", "Inception")]
      (Qu [ field "releaseDate" TrivScalar
          , field "actors" $
@@ -104,5 +104,5 @@ export
 spec : IO ()
 spec =
   assertEq
-    (fmt inception)
+    (fmt Inception)
     inceptionF
